@@ -1,0 +1,3 @@
+{
+    "mongoURI": "mongodb+srv://vinay:vinay.123@nodedb.3q5kx.mongodb.net/NodeDB?retryWrites=true&w=majority"
+}
