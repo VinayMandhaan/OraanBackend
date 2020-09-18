@@ -39,10 +39,42 @@ router.post("/",[
     }catch(err){
         console.log(err)
     }
-    
-
-
 })
+
+
+router.post("/user" , async(req,res) => { 
+    try{
+        const {userId} = req.body
+        if(mongoose.Types.ObjectId.isValid(userId)) {
+            
+            Installment.aggregate([
+                { 
+                  $match: {
+                    user: {
+                      $eq: new ObjectId(userId),
+                    }    
+                  }
+                }, {
+                  $group: {
+                    _id:null,
+                    total: {
+                      $sum: "$installment_amount"
+                    }
+                  }
+                }
+              ]).then(response=>{  
+                return res.json(response.map(val=>"YOU HAVE SAVED "+val.total+ "PKR"))
+              })
+        }else{
+            return res.status(400).json({msg:"No Profile for this user"})
+        }
+    }catch(err){
+        console.log(err)
+    }
+})
+
+
+
 
 
 module.exports = router
