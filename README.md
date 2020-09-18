@@ -17,3 +17,8 @@ After Cloning the repo, run the following commands.
 https://www.getpostman.com/collections/d9bc2a28dfa881b59847
 
 Import this URL for Postman API'S
+
+
+# Mongo URI
+
+mongodb+srv://vinay:vinay.123@nodedb.3q5kx.mongodb.net/NodeDB?retryWrites=true&w=majority
