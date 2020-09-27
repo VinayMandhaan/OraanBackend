@@ -1,5 +1,14 @@
 # OraanBackend
 
+# Token Based Authentication
+Token based authentication is implemented. The Code is pushed into new branch Alpha. 
+User does not have to provide userId anymore, User when logging in will recieve a token.
+User will use that token to create installments and get savings.
+
+# Token Usage
+use 'x-auth-token' in Headers and pass the token in the value.
+
+
 You can download the project by cloning the Git Repository.
 
 After Cloning the repo, run the following commands.
@@ -17,6 +26,7 @@ After Cloning the repo, run the following commands.
 https://www.getpostman.com/collections/d9bc2a28dfa881b59847
 
 Import this URL for Postman API'S
+Updated with Token Based Auth
 
 
 # Mongo URI
