@@ -4,6 +4,7 @@ const {check, validationResult} = require('express-validator')
 const User = require('../../models/User')
 const bcrypt = require('bcryptjs')
 const config = require('config')
+const jwt = require('jsonwebtoken')
 
 
 
@@ -36,8 +37,20 @@ router.post("/",[
             return res.status(400).json({errors : [{msg: 'Invalid email or password'}]})
         }
 
-        // Return user
-        res.json({user})
+        const payLoad = {
+            user :{
+                 id: user.id
+             }
+         }
+         jwt.sign(payLoad,config.get('jwtSecret'),{expiresIn:36000},(err,token)=>{
+            if(err){
+                throw err
+            }
+            res.json({token})
+         })
+
+        // // Return user
+        // res.json({user})
 
     }catch(err){
         console.log(err.message)
