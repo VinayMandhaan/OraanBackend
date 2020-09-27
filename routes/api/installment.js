@@ -7,15 +7,15 @@ const mongoose = require('mongoose')
 const Installment = require('../../models/Installment')
 const User = require('../../models/User')
 var ObjectId = require('mongodb').ObjectID;
-
+const auth = require('../../middleware/auth')
 
 // Create Transactions
 
 // User has to provide the installment amount and payment method, user can provide the date too, If the date is not provided it will take the default date.
-router.post("/",[
+router.post("/",[auth,[
     check('installment_amount', 'installment_amount is required').not().isEmpty(),
     check('payment_method', 'payment_method is required').not().isEmpty(),
-], async(req,res) => { 
+]], async(req,res) => { 
     const errors = validationResult(req)
 
     // Check for errors
@@ -24,13 +24,14 @@ router.post("/",[
     }
 
 
-    const {userId, installment_amount,payment_method,payment_date,installment_date } = req.body
+    const {installment_amount,payment_method,payment_date,installment_date } = req.body
     try{
         // Check if the given userId is valid
-        if(mongoose.Types.ObjectId.isValid(userId)) {
-            console.log(userId)
-            const subs = await User.findOne(new ObjectId(userId))
+        if(mongoose.Types.ObjectId.isValid(req.user.id)) {
+            console.log(req.user.id)
+            // const subs = await User.findOne(new ObjectId(userId))
 
+            const subs = await User.findById(req.user.id) 
             // If Id is valid create installment
             if(subs){
                 installment = new Installment({
@@ -38,7 +39,7 @@ router.post("/",[
                     installment_date,
                     installment_amount,
                     payment_method,
-                    user:userId
+                    user:req.user.id
                 })
                 await installment.save();
                 res.json({installment})
@@ -58,20 +59,20 @@ router.post("/",[
 
 
 //Get User Savings
-router.post("/user" , async(req,res) => { 
+router.post("/user" , auth, async(req,res) => { 
     try{
         // Get UserId
         const {userId} = req.body
 
         //Check if UserId is Valid
-        if(mongoose.Types.ObjectId.isValid(userId)) {
+        if(mongoose.Types.ObjectId.isValid(req.user.id)) {
             
             // Used Aggregation to Sum the installment amounts of the given user
             Installment.aggregate([
                 { 
                   $match: {
                     user: {
-                      $eq: new ObjectId(userId),
+                      $eq: new ObjectId(req.user.id),
                     }    
                   }
                 }, {
